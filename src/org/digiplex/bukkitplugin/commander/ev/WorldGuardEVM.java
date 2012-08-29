@@ -1,5 +1,9 @@
 package org.digiplex.bukkitplugin.commander.ev;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,6 +21,10 @@ public class WorldGuardEVM implements CmdrEnvVarModule {
 		if (plugin == null) throw new NullPointerException("Could not get World Guard plugin!");
 	}
 
+	private List<String> convertSet(Set<String> set) {
+		return new ArrayList<String>(set);
+	}
+	
 	@Override public String getNamespace() { return "WorldGuard"; }
 
 	@Override public Object getEVValue(String varname, CommandSender sender) throws BadEVPathException {
@@ -35,7 +43,8 @@ public class WorldGuardEVM implements CmdrEnvVarModule {
 			String regionname = varpath[1];
 			ProtectedRegion r = plugin.getGlobalRegionManager().get(p.getWorld()).getRegion(regionname);
 			
-			
+			if (varpath[2].equalsIgnoreCase("owners")) return convertSet(r.getOwners().getPlayers()); //TODO add groups to these
+			if (varpath[2].equalsIgnoreCase("members")) return convertSet(r.getMembers().getPlayers());
 		}
 		
 		return null;
